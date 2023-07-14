@@ -2,7 +2,7 @@
 
 ## yokai.exe
 Decrypts multiple encrypted file types.<br>
-Supported filetypes are ```.cud```, ```.m4```, ```.og```, ```.ayd```, ```.ejs```<br>
+Supported filetypes are ```.cud```, ```.m4```, ```.og```, ```.ayd```, ```.ejs```, ```.ez```, ```.ojk```<br>
 <br>Syntax:
 ```yokai.exe <file>```<br>
 Example:
