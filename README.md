@@ -40,3 +40,7 @@ Example:
 findAesKey.py "ywp_file.cud"
 findAesKey.py "ywp_file.ejs"
 ```
+
+<br><br><hr>
+Keys found by DarkCraft<br>
+Scripts written by Eclip5e
