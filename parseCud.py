@@ -9,7 +9,7 @@ def isTranslatable(string):
 	return re.search('[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]', string)
 
 # Load a module and use it to parse
-def moduleParser(moduleName, data, dbType, mode):
+def moduleParser(moduleName, data, masterData, dbType, mode):
 	fname, file_extension = os.path.splitext(moduleName)
 	if not os.path.isfile('./parser_modules/' + fname + ".py"):
 		return False
@@ -17,9 +17,9 @@ def moduleParser(moduleName, data, dbType, mode):
 	print("Using " + fname + " module")
 	try:
 		if mode == 0: # Parse
-			return module.parser(data)
+			return module.parser(data, dbType)
 		elif mode == 1: # Unparse
-			return module.unparser(data)
+			return module.unparser(data, masterData, dbType)
 		else: # Invalid
 			return False
 	except Exception as e:
@@ -89,7 +89,7 @@ def parseCud(file):
 
 	# Parse data
 	# Modulated parsing
-	parsed = moduleParser(os.path.basename(file), data["masterData"], dbType, 0)
+	parsed = moduleParser(os.path.basename(file), data["masterData"], None, dbType, 0)
 	if parsed != False:
 		masterData = parsed
 	else:
@@ -125,7 +125,7 @@ def unparseCud(file):
 
 	# Parse data
 	# Modulated parsing
-	parsed = moduleParser(os.path.basename(file.replace("_parsed.json", ".json")), data["data"], data["type"], 1)
+	parsed = moduleParser(os.path.basename(file.replace("_parsed.json", ".json")), data["data"], masterDataRaw["masterData"], data["type"], 1)
 	if parsed != False:
 		masterData = parsed
 	else:
