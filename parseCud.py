@@ -97,7 +97,7 @@ def parseCud(file):
 
 	# Save to parsed file
 	with open(file.replace(".json", "_parsed.json"), 'w', encoding='utf-8') as f:
-		json.dump({"type":dbType,"data":masterData}, f, ensure_ascii=False, separators=(',', ':'))
+		json.dump({"type":dbType,"data":masterData}, f, ensure_ascii=False, separators=(',', ':'), indent=4)
 
 # Merge parsed json data with original
 def unparseCud(file):
