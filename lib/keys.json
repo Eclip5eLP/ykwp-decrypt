@@ -13,6 +13,6 @@
         [ "cud", "json", "cud" ],
         [ "ayd", "zip", "zip" ],
         [ "ejs", "json", "ejs" ],
-        [ "ojk", "json", "ojk" ]
+        [ "ojk", "zip", "ojk" ]
     ]
 }
