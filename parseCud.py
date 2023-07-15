@@ -68,12 +68,12 @@ def parseCud(file):
 		print("File not found")
 		return False
 
-	# Read source file
-	with open(file, 'r', encoding='utf-8') as f:
-		data = json.load(f)
-
-	# Check if valid
+	# Check if valid cud
 	try:
+		# Read source file
+		with open(file, 'r', encoding='utf-8') as f:
+			data = json.load(f)
+
 		if data["masterData"]:
 			pass
 	except Exception:
@@ -108,15 +108,14 @@ def unparseCud(file):
 		print("Original file not found")
 		return False
 
-	# Read source and parsed files
-	with open(file, 'r', encoding='utf-8') as f:
-		data = json.load(f)
-
-	with open(file.replace("_parsed.json", ".json"), 'r', encoding='utf-8') as f:
-		masterDataRaw = json.load(f)
-
 	# Check if valid
 	try:
+		# Read source and parsed files
+		with open(file, 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		with open(file.replace("_parsed.json", ".json"), 'r', encoding='utf-8') as f:
+			masterDataRaw = json.load(f)
+
 		if data["type"] == "":
 			print("Invalid data type")
 	except Exception:
