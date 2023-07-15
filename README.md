@@ -13,7 +13,6 @@ yokai.exe "ywp_file.m4"
 
 ## ykwp.py
 Decrypts and Encrypts ```.cud``` files.<br>
-Encryption mode needs an original encrypted file to work.<br>
 <br>Syntax: ```ykwp.py <-e/-d> <file/folder>```<br>
 Example:
 ```
