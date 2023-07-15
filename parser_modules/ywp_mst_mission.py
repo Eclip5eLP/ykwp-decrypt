@@ -1,3 +1,5 @@
+import re
+
 def parser(data, dbType):
 	translate = []
 	if dbType == "dict": # cud data is dictionary
@@ -11,7 +13,7 @@ def parser(data, dbType):
 				translate.append({"index":i,"text":x})
 	return translate
 
-def unparser(data, dbType):
+def unparser(data, masterDataRaw, dbType):
 	try:
 		if dbType == "dict": # cud data is dictionary
 			masterData = json.loads(masterDataRaw)["data"]
@@ -27,6 +29,12 @@ def unparser(data, dbType):
 				masterData[x["index"]] = x["text"]
 			masterData = '|'.join(masterData)
 		return masterData
-	except Exception:
+	except Exception as e:
 		print("Invalid data")
+		print(e)
 		return False
+
+def isTranslatable(string):
+	if string.isdigit() or string == "":
+		return False
+	return re.search('[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]', string)
