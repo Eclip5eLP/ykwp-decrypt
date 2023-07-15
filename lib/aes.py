@@ -1,5 +1,4 @@
-import binascii
-import os
+import binascii, os
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
@@ -46,7 +45,7 @@ def decrypt_file(input_file, output_file, key_hex):
 
         try:
             if len(plaintext) > 0:
-                plaintext2 = plaintext.decode("utf-8")
+                #plaintext2 = plaintext.decode("utf-8")
                 with open(output_file, 'wb') as file:
                     file.write(plaintext)
                 return True

@@ -1,0 +1,18 @@
+{
+    "keys": {
+        "snd": "80F008394EB02F4FC7F5A5C235C42918",
+        "zip": "2AB511F477977D25CF6F7A8AE049A125",
+        "cud": "A33C778C0A625BEC694310C2FE215629",
+        "ejs": "08C5C1BCC31AE085EF39932507242B6A",
+        "ojk": "4FA8B900F49228BDA7D9C525EF12611D"
+    },
+    "ext": [
+        [ "og", "ogg", "snd" ],
+        [ "m4", "m4a", "snd" ],
+        [ "ez", "zip", "zip" ],
+        [ "cud", "json", "cud" ],
+        [ "ayd", "zip", "zip" ],
+        [ "ejs", "json", "ejs" ],
+        [ "ojk", "json", "ojk" ]
+    ]
+}
