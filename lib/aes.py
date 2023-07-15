@@ -57,7 +57,7 @@ def decrypt_file(input_file, output_file, key_hex):
     except Exception:
         return False
 
-def encrypt_file(input_file, output_file, key_hex):
+def encrypt_file(input_file, output_file, key_hex, useHeader=False):
     try:
         block_size = algorithms.AES.block_size // 8
         key = binascii.unhexlify(key_hex)
@@ -66,15 +66,20 @@ def encrypt_file(input_file, output_file, key_hex):
             plaintext = file.read()
 
         fname, file_extension = os.path.splitext(input_file)
-        header = fname + ".cud"
-        if not os.path.isfile(header):
-            print("Header file missing")
-            return False
 
-        with open(header, 'rb') as file:
-            headertext = file.read()
+        if useHeader:
+            header = fname + ".cud"
+            if not os.path.isfile(header):
+                print("Header file missing")
+                return False
 
-        iv = headertext[:block_size]
+            with open(header, 'rb') as file:
+                headertext = file.read()
+
+            iv = headertext[:block_size]
+        else:
+            iv = os.urandom(16)
+
         plaintext = plaintext + (b'\x0B' * (block_size - len(plaintext) % block_size))
 
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
