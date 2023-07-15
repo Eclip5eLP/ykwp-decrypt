@@ -33,7 +33,12 @@ def parser_default(data, dbType):
 	if dbType == "dict": # cud data is dictionary
 		masterData = json.loads(data)
 		for i, x in enumerate(masterData["data"]):
-			translate.append({"index":i,"charaName":x["charaName"],"messageText":x["messageText"]})
+			_temp = {"index":i}
+			for j, y in enumerate(x):
+				if isTranslatable(str(x[y])):
+					_temp[y] = x[y]
+			if _temp != {"index":i}:
+				translate.append(_temp)
 	else: # cud data is string
 		masterData = data.split("|")
 		for i, x in enumerate(masterData):
@@ -51,7 +56,7 @@ def unparser_default(data, masterDataRaw, dbType):
 					if y == "index":
 						continue
 					masterData[x["index"]][y] = x[y]
-			masterData = json.dumps({"data":masterData}, ensure_ascii=False)
+			masterData = json.dumps({"data":masterData}, ensure_ascii=False, separators=(',', ':'))
 		else: # cud data is string
 			masterData = masterDataRaw.split("|")
 			for i, x in enumerate(data):
