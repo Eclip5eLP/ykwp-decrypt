@@ -21,6 +21,17 @@ yokai.exe "ywp_file.cud"
 yokai.exe "ywp_file.m4"
 ```
 
+## parseCud.py
+Reads a decrypted cud (.json) and parses its contents to be easier to edit.<br>
+Will also reverse and merge the parsed contents with the original.<br>
+<br>Syntax:
+```parseCud.py <-p/-u> <file>```<br>
+Example:
+```
+parseCud.py -p "ywp_file.json"
+parseCud.py -u "ywp_file_parsed.json"
+```
+
 ## findAesKey.py
 Finds the AES decryption key for a given file by searching the library files.<br>
 <br>Syntax: ```findAesKey.py <file>```<br>
