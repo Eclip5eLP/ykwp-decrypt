@@ -1,11 +1,66 @@
 import json
 import os, sys, re
+sys.path.append('./parser_modules')
 
+# Check if text is translatable
 def isTranslatable(string):
-	#return re.search('[a-zA-Z]', string)
 	if string.isdigit() or string == "":
 		return False
 	return re.search('[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]', string)
+
+# Load a module and use it to parse
+def moduleParser(moduleName, data, dbType, mode):
+	fname, file_extension = os.path.splitext(moduleName)
+	if not os.path.isfile('./parser_modules/' + fname + ".py"):
+		return False
+	module = __import__(fname)
+	print("Using " + fname + " module")
+	try:
+		if mode == 0: # Parse
+			return module.parser(data)
+		elif mode == 1: # Unparse
+			return module.unparser(data)
+		else: # Invalid
+			return False
+	except Exception as e:
+		print("Module error:")
+		print(e)
+		return False
+
+# Default parsing method
+def parser_default(data, dbType):
+	translate = []
+	if dbType == "dict": # cud data is dictionary
+		masterData = json.loads(data)
+		for i, x in enumerate(masterData["data"]):
+			translate.append({"index":i,"charaName":x["charaName"],"messageText":x["messageText"]})
+	else: # cud data is string
+		masterData = data.split("|")
+		for i, x in enumerate(masterData):
+			if isTranslatable(x):
+				translate.append({"index":i,"text":x})
+	return translate
+
+# Default unparsing method
+def unparser_default(data, masterDataRaw, dbType):
+	try:
+		if dbType == "dict": # cud data is dictionary
+			masterData = json.loads(masterDataRaw)["data"]
+			for i, x in enumerate(data):
+				for idx, y in enumerate(x):
+					if y == "index":
+						continue
+					masterData[x["index"]][y] = x[y]
+			masterData = json.dumps({"data":masterData}, ensure_ascii=False)
+		else: # cud data is string
+			masterData = masterDataRaw.split("|")
+			for i, x in enumerate(data):
+				masterData[x["index"]] = x["text"]
+			masterData = '|'.join(masterData)
+		return masterData
+	except Exception:
+		print("Invalid data")
+		return False
 
 # Parse json into easily editable json
 def parseCud(file):
@@ -25,23 +80,24 @@ def parseCud(file):
 		print("File is not a valid cud")
 		return False
 
-	# Parse data
-	translate = []
-	try: # cud data is dictionary
+	# Check data type
+	try: # dict
 		masterData = json.loads(data["masterData"])
 		dbType = "dict"
-		for i, x in enumerate(masterData["data"]):
-			translate.append({"index":i,"charaName":x["charaName"],"messageText":x["messageText"]})
-	except Exception: # cud data is string
-		masterData = data["masterData"].split("|")
+	except Exception: # string
 		dbType = "string"
-		for i, x in enumerate(masterData):
-			if isTranslatable(x):
-				translate.append({"index":i,"text":x})
+
+	# Parse data
+	# Modulated parsing
+	parsed = moduleParser(os.path.basename(file), data["masterData"], dbType, 0)
+	if parsed != False:
+		masterData = parsed
+	else:
+		masterData = parser_default(data["masterData"], dbType)
 
 	# Save to parsed file
 	with open(file.replace(".json", "_parsed.json"), 'w', encoding='utf-8') as f:
-		json.dump({"type":dbType,"data":translate}, f, ensure_ascii=False)
+		json.dump({"type":dbType,"data":masterData}, f, ensure_ascii=False, separators=(',', ':'))
 
 # Merge parsed json data with original
 def unparseCud(file):
@@ -61,31 +117,25 @@ def unparseCud(file):
 
 	# Check if valid
 	try:
-		if data["type"] == "dict":
-			pass
+		if data["type"] == "":
+			print("Invalid data type")
 	except Exception:
 		print("Input is not parsed")
 		return False
 
 	# Parse data
-	if data["type"] == "dict": # cud data is dictionary
-		masterData = json.loads(masterDataRaw["masterData"])["data"]
-		for i, x in enumerate(data["data"]):
-			for idx, y in enumerate(x):
-				if y == "index":
-					continue
-				masterData[x["index"]][y] = x[y]
-		masterData = json.dumps({"data":masterData}, ensure_ascii=False)
-	else: # cud data is string
-		masterData = masterDataRaw["masterData"].split("|")
-		for i, x in enumerate(data["data"]):
-			masterData[x["index"]] = x["text"]
-		masterData = '|'.join(masterData)
+	# Modulated parsing
+	parsed = moduleParser(os.path.basename(file.replace("_parsed.json", ".json")), data["data"], data["type"], 1)
+	if parsed != False:
+		masterData = parsed
+	else:
+		masterData = unparser_default(data["data"], masterDataRaw["masterData"], data["type"])
 
 	# Save to source file
 	with open(file.replace("_parsed.json", ".json"), 'w', encoding='utf-8') as f:
-		f.write(json.dumps({"appVersion":masterDataRaw["appVersion"],"masterData":masterData}, ensure_ascii=False).replace("</R>", "<\\/R>"))
+		f.write(json.dumps({"appVersion":masterDataRaw["appVersion"],"masterData":masterData}, ensure_ascii=False, separators=(',', ':')).replace("</R>", "<\\/R>").replace("</B>", "<\\/B>"))
 
+# Main
 def main(file, mode):
 	if mode == "-p":
 		parseCud(file)
