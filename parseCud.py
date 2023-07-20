@@ -6,7 +6,11 @@ sys.path.append('./parser_modules')
 def isTranslatable(string):
 	if string.isdigit() or string == "":
 		return False
-	return re.search('[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]', string)
+	jp = re.search('[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]', string)
+	en = re.search('[a-zA-Z]', string)
+	if jp or en:
+		return True
+	return False
 
 # Load a module and use it to parse
 def moduleParser(moduleName, data, masterData, dbType, mode):
